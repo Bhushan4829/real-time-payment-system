@@ -8,6 +8,9 @@ import (
 	"fmt"
 )
 import "io"
+import (
+	"github.com/Bhushan4829/real-time-payment-system/models"
+)
 
 type PaymentRequest struct {
 	Sender   string  `json:"sender"`
@@ -20,6 +23,11 @@ type PaymentResponse struct {
 	Message   string  `json:"message"`
 	Timestamp string  `json:"timestamp"`
 	Amount    float64 `json:"amount"`
+}
+var Transactions []models.Transaction
+func GetTransactions(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(Transactions)
 }
 
 func SimulatePayment(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +48,8 @@ func SimulatePayment(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
+	// After generating response
+	
 
 
 	// Simulate random success or failure
@@ -54,7 +64,14 @@ func SimulatePayment(w http.ResponseWriter, r *http.Request) {
 		Timestamp: time.Now().Format(time.RFC3339),
 		Amount:    req.Amount,
 	}
-
+	transaction := models.Transaction{
+		Sender:    req.Sender,
+		Receiver:  req.Receiver,
+		Amount:    req.Amount,
+		Status:    status,
+		Timestamp: res.Timestamp,
+	}
+	Transactions = append(Transactions, transaction)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(res)
 }

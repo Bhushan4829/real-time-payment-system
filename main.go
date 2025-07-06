@@ -14,6 +14,7 @@ func main() {
 	})
 
 	http.HandleFunc("/simulate-payment", handlers.SimulatePayment)
+	http.HandleFunc("/transactions", handlers.GetTransactions)
 
 	fmt.Println("Server started at http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
